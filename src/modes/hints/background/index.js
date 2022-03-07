@@ -5,6 +5,10 @@ import { generateHintStrings } from './hintStrings'
 let hintChars = 'adsfghjkl;'
 let autoActivateHint = false
 
+const firefoxNoNativeClick =
+  SAKA_PLATFORM === 'firefox' &&
+  navigator.userAgent.match(/\bFirefox\/(\d+)/)[1] < 96
+
 export default {
   onOptionsChange: (options) => {
     hintChars = options.hintChars.length >= 2 ? options.hintChars : 'bad'
@@ -57,51 +61,50 @@ export default {
     },
     // Needed to activate links on firefox because it ignores keyboard modifiers
     // or doesn't execute default behaviors on click events
-    ...{}
-    // (SAKA_PLATFORM === 'chrome'
-    //   ? {}
-    //   : {
-    //     openLinkInBackgroundTab: url => {
-    //       const arg = {
-    //         url: url,
-    //         active: false
-    //       }
-    //       browser.tabs
-    //         .query({ currentWindow: true, active: true })
-    //         .then(t => {
-    //           arg.cookieStoreId = t[0].cookieStoreId
-    //         })
-    //         .finally(() => {
-    //           browser.tabs.create(arg)
-    //         })
-    //     },
-    //     openLinkInForegroundTab: url => {
-    //       const arg = {
-    //         url: url,
-    //         active: true
-    //       }
-    //       browser.tabs
-    //         .query({ currentWindow: true, active: true })
-    //         .then(t => {
-    //           arg.cookieStoreId = t[0].cookieStoreId
-    //         })
-    //         .finally(() => {
-    //           browser.tabs.create(arg)
-    //         })
-    //     },
-    //     openLinkInNewWindow: url => {
-    //       const arg = {
-    //         url: url
-    //       }
-    //       browser.tabs
-    //         .query({ currentWindow: true, active: true })
-    //         .then(t => {
-    //           arg.cookieStoreId = t[0].cookieStoreId
-    //         })
-    //         .finally(() => {
-    //           browser.windows.create(arg)
-    //         })
-    //     }
-    //  })
+    ...(firefoxNoNativeClick
+      ? {
+        openLinkInBackgroundTab: (url) => {
+          const arg = {
+            url: url,
+            active: false
+          }
+          browser.tabs
+            .query({ currentWindow: true, active: true })
+            .then((t) => {
+              arg.cookieStoreId = t[0].cookieStoreId
+            })
+            .finally(() => {
+              browser.tabs.create(arg)
+            })
+        },
+        openLinkInForegroundTab: (url) => {
+          const arg = {
+            url: url,
+            active: true
+          }
+          browser.tabs
+            .query({ currentWindow: true, active: true })
+            .then((t) => {
+              arg.cookieStoreId = t[0].cookieStoreId
+            })
+            .finally(() => {
+              browser.tabs.create(arg)
+            })
+        },
+        openLinkInNewWindow: (url) => {
+          const arg = {
+            url: url
+          }
+          browser.tabs
+            .query({ currentWindow: true, active: true })
+            .then((t) => {
+              arg.cookieStoreId = t[0].cookieStoreId
+            })
+            .finally(() => {
+              browser.windows.create(arg)
+            })
+        }
+      }
+      : {})
   }
 }
