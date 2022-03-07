@@ -6,7 +6,7 @@ let hintChars = 'adsfghjkl;'
 let autoActivateHint = false
 
 export default {
-  onOptionsChange: options => {
+  onOptionsChange: (options) => {
     hintChars = options.hintChars.length >= 2 ? options.hintChars : 'bad'
     autoActivateHint = options.autoActivateHint
   },
@@ -51,56 +51,57 @@ export default {
         }
       } catch (e) {}
     },
-    openLinkInIncognitoWindow: url => {
+    openLinkInIncognitoWindow: (url) => {
       // TODO: consider more robust URL verification like Vimium's
       browser.windows.create({ url, incognito: true })
     },
     // Needed to activate links on firefox because it ignores keyboard modifiers
     // or doesn't execute default behaviors on click events
-    ...(SAKA_PLATFORM === 'chrome'
-      ? {}
-      : {
-        openLinkInBackgroundTab: url => {
-          const arg = {
-            url: url,
-            active: false
-          }
-          browser.tabs
-            .query({ currentWindow: true, active: true })
-            .then(t => {
-              arg.cookieStoreId = t[0].cookieStoreId
-            })
-            .finally(() => {
-              browser.tabs.create(arg)
-            })
-        },
-        openLinkInForegroundTab: url => {
-          const arg = {
-            url: url,
-            active: true
-          }
-          browser.tabs
-            .query({ currentWindow: true, active: true })
-            .then(t => {
-              arg.cookieStoreId = t[0].cookieStoreId
-            })
-            .finally(() => {
-              browser.tabs.create(arg)
-            })
-        },
-        openLinkInNewWindow: url => {
-          const arg = {
-            url: url
-          }
-          browser.tabs
-            .query({ currentWindow: true, active: true })
-            .then(t => {
-              arg.cookieStoreId = t[0].cookieStoreId
-            })
-            .finally(() => {
-              browser.windows.create(arg)
-            })
-        }
-      })
+    ...{}
+    // (SAKA_PLATFORM === 'chrome'
+    //   ? {}
+    //   : {
+    //     openLinkInBackgroundTab: url => {
+    //       const arg = {
+    //         url: url,
+    //         active: false
+    //       }
+    //       browser.tabs
+    //         .query({ currentWindow: true, active: true })
+    //         .then(t => {
+    //           arg.cookieStoreId = t[0].cookieStoreId
+    //         })
+    //         .finally(() => {
+    //           browser.tabs.create(arg)
+    //         })
+    //     },
+    //     openLinkInForegroundTab: url => {
+    //       const arg = {
+    //         url: url,
+    //         active: true
+    //       }
+    //       browser.tabs
+    //         .query({ currentWindow: true, active: true })
+    //         .then(t => {
+    //           arg.cookieStoreId = t[0].cookieStoreId
+    //         })
+    //         .finally(() => {
+    //           browser.tabs.create(arg)
+    //         })
+    //     },
+    //     openLinkInNewWindow: url => {
+    //       const arg = {
+    //         url: url
+    //       }
+    //       browser.tabs
+    //         .query({ currentWindow: true, active: true })
+    //         .then(t => {
+    //           arg.cookieStoreId = t[0].cookieStoreId
+    //         })
+    //         .finally(() => {
+    //           browser.windows.create(arg)
+    //         })
+    //     }
+    //  })
   }
 }

@@ -40,9 +40,9 @@ const activators = {
   },
   openLinkInBackgroundTab: (event, target) => {
     mouseEvent(target, 'click', { ctrlKey: !isMac, metaKey: isMac })
-    if (SAKA_PLATFORM === 'firefox') {
-      backgroundOpenLink('openLinkInBackgroundTab', target)
-    }
+    // if (SAKA_PLATFORM === 'firefox') {
+    //   backgroundOpenLink('openLinkInBackgroundTab', target)
+    // }
     target.focus()
     return 'Reset'
   },
@@ -52,17 +52,17 @@ const activators = {
       metaKey: isMac,
       shiftKey: true
     })
-    if (SAKA_PLATFORM === 'firefox') {
-      backgroundOpenLink('openLinkInForegroundTab', target)
-    }
+    // if (SAKA_PLATFORM === 'firefox') {
+    //   backgroundOpenLink('openLinkInForegroundTab', target)
+    // }
     target.focus()
     return 'Reset'
   },
   openLinkInNewWindow: (event, target) => {
     mouseEvent(target, 'click', { shiftKey: true })
-    if (SAKA_PLATFORM === 'firefox') {
-      backgroundOpenLink('openLinkInNewWindow', target)
-    }
+    // if (SAKA_PLATFORM === 'firefox') {
+    //   backgroundOpenLink('openLinkInNewWindow', target)
+    // }
     target.focus()
     return 'Reset'
   },
